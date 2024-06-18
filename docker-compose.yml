@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres:14.2-alpine
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT}
+    environment:
+      POSTGRES_DB: core
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ${DB_VOLUMES}
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+    environment:
+      CORESETTINGS_DATABASES: '{"default":{"HOST":"db"}}'
+      CORESETTINGS_LOCAL_SETTINGS_PATH: 'local/settings.prod.py'
+
+volumes:
+  postgresql-data:
+    driver: local

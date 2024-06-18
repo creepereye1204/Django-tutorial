@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres:14.2-alpine
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT}
+    environment:
+      POSTGRES_DB: core
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ${DB_VOLUMES}
+
+volumes:
+  postgresql-data:
+    driver: ${VOLUMES}

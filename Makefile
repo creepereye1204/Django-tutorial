@@ -16,7 +16,7 @@ migrate:
 
 .PHONY: migrations
 migrations:
-	poetry run python -m core.manage migrations
+	poetry run python -m core.manage makemigrations
 
 .PHONY: run-server
 run-server:
@@ -25,6 +25,16 @@ run-server:
 .PHONY: superuser
 superuser:
 	poetry run python -m core.manage createsuperuser
+
+.PHONY: up
+up:
+	test -f .env || touch .env
+	docker-compose -f docker-compose.yml up --build
+
+.PHONY: up-dependencies-only
+up-dependencies-only:
+	test -f .env || touch .env
+	docker-compose -f docker-compose.yml up --force-recreate db
 
 .PHONY: update
 update: install migrate install-pre-commit ;
